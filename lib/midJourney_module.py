@@ -27,7 +27,7 @@ class MidJourneyModule:
         api_url = f"{self.domain_name}/mj/submit/imagine"
 
         headers = {
-            "mj-api-secret": self.api_key
+            "Authorization": f"Bearer {self.api_key}"
         }
 
         # 发送POST请求
@@ -60,7 +60,7 @@ class MidJourneyModule:
         """
         api_url = f"{self.domain_name}/mj/task/{id}/fetch"
         headers = {
-            "mj-api-secret": self.api_key
+            "Authorization": f"Bearer {self.api_key}"
         }
 
         start_time = time.time()  # 记录开始时间
@@ -102,7 +102,7 @@ class MidJourneyModule:
         api_url = f"{self.domain_name}/mj/submit/simple-change"
 
         headers = {
-            "mj-api-secret": self.api_key
+            "Authorization": f"Bearer {self.api_key}"
         }
 
         # 发送POST请求
@@ -135,7 +135,7 @@ class MidJourneyModule:
             base64_data) <= 5, "base64_data should be a list with 2 to 5 items."
 
         url = f"{self.domain_name}/mj/submit/blend"
-        headers = {"Content-Type": "application/json", "mj-api-secret": self.api_key}
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}"}
         data = {
             "base64Array": base64_data,
             "dimensions": dimensions,
