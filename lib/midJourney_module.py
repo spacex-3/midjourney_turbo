@@ -63,29 +63,59 @@ class MidJourneyModule:
             "Authorization": f"Bearer {self.api_key}"
         }
 
-        start_time = time.time()  # 记录开始时间
+        start_time = time.time()
         while True:
             try:
-                # 发送GET请求
                 response = requests.get(url=api_url, headers=headers, timeout=120.05)
                 if response.status_code == 200:
                     get_image_url_data = response.json()
                     logger.debug("get_image_url_data: %s" % get_image_url_data)
-                    if get_image_url_data['failReason'] is None:
-                        if get_image_url_data['status'] != 'SUCCESS':
-                            time.sleep(30)
-                            if time.time() - start_time > 300:
-                                return "请求超时，请稍后再试~~~"
-                        else:
-                            return get_image_url_data
-                    else:
+    
+                    # 检查任务失败的原因
+                    if get_image_url_data['failReason']:
+                        return get_image_url_data['failReason']
+    
+                    # 检查任务是否完成
+                    if get_image_url_data['status'] == 'SUCCESS' and get_image_url_data['imageUrl']:
                         return get_image_url_data
+    
+                    # 任务仍在进行中，等待一段时间后重试
+                    if time.time() - start_time > 300:  # 5分钟超时
+                        return "请求超时，请稍后再试~~~"
+    
+                    time.sleep(10)  # 每隔10秒轮询一次
                 else:
                     logger.error("Error occurred: %s" % response.text)
                     return "哦豁，出现了未知错误，请联系管理员~~~"
             except Exception as e:
                 logger.error("Error occurred: %s" % str(e))
                 return "哦豁，出现了未知错误，请联系管理员~~~"
+
+
+        
+        # start_time = time.time()  # 记录开始时间
+        # while True:
+        #     try:
+        #         # 发送GET请求
+        #         response = requests.get(url=api_url, headers=headers, timeout=120.05)
+        #         if response.status_code == 200:
+        #             get_image_url_data = response.json()
+        #             logger.debug("get_image_url_data: %s" % get_image_url_data)
+        #             if get_image_url_data['failReason'] is None:
+        #                 if get_image_url_data['status'] != 'SUCCESS':
+        #                     time.sleep(30)
+        #                     if time.time() - start_time > 300:
+        #                         return "请求超时，请稍后再试~~~"
+        #                 else:
+        #                     return get_image_url_data
+        #             else:
+        #                 return get_image_url_data
+        #         else:
+        #             logger.error("Error occurred: %s" % response.text)
+        #             return "哦豁，出现了未知错误，请联系管理员~~~"
+        #     except Exception as e:
+        #         logger.error("Error occurred: %s" % str(e))
+        #         return "哦豁，出现了未知错误，请联系管理员~~~"
 
     # 提交变换任务的函数
     def get_simple(self, content):
