@@ -72,6 +72,11 @@ def format_content(content):
 
     return prompt, commands
 
+# 设置优化prompt的base和key
+
+openai.api_key = "sk-9ONlzn5ucFkg9Au477B72d1035784d2e8089462dD9E27117"
+openai.api_base = "http://192.168.1.101:50000/v1"
+
 
 # 根据内容生成提示信息
 def generate_prompt(content):
