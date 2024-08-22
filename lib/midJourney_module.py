@@ -36,10 +36,10 @@ class MidJourneyModule:
             if response.status_code == 200:
                 get_imagine_data = response.json()
                 logger.debug("get_imagine_data: %s" % get_imagine_data)
-                if get_imagine_data.get('code') != 1:
-                    return get_imagine_data.get('description')
-                else:
+                if get_imagine_data.get('status') == 'SUCCESS':
                     return get_imagine_data
+                else:
+                    return get_imagine_data.get('description')
             else:
                 logger.error("Error occurred: %s" % response.text)
                 return "哦豁，出现了未知错误，请联系管理员~~~"
